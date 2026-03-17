@@ -1,0 +1,64 @@
+/* Full screen gray background */
+.fake-payment-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #f6f9fc; /* Stripe style gray */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Card container */
+.fake-payment-container {
+  width: 400px;
+  background: white;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+  text-align: center;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+.fake-payment-container h2 {
+  margin-bottom: 20px;
+  color: #32325d;
+}
+
+.fake-payment-container input {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border-radius: 6px;
+  border: 1px solid #ccd0d5;
+  font-size: 14px;
+}
+
+.multi-input {
+  display: flex;
+  gap: 10px;
+}
+
+.multi-input input {
+  flex: 1;
+}
+
+.fake-payment-container button {
+  width: 100%;
+  padding: 14px;
+  margin-top: 20px;
+  border: none;
+  background-color: #6772e5; /* Stripe blue */
+  color: white;
+  font-size: 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.fake-payment-container button:hover {
+  background-color: #5469d4;
+}

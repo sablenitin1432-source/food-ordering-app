@@ -4,7 +4,7 @@ import { assets } from '../../assets/assets'
 import axios from "axios"
 import { toast } from 'react-toastify'
 
-const Add = ({url}) => {
+const Add = ({ url }) => {
 
   const [image, setImage] = useState(false)
   const [data, setData] = useState({
@@ -46,10 +46,6 @@ const Add = ({url}) => {
       toast.error(response.data.message)
     }
   }
-
-
-
-
   return (
     <div className='add'>
       <form className='flex-col' onSubmit={onSubmitHandler}>
