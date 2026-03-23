@@ -55,7 +55,7 @@ const Cart = () => {
           <div>
             <div className="cart-total-details">
               <p>Subtotal</p>
-              <p>${getTotalCartAmount() === 0 ? 0 : 2}</p>
+              <p>${getTotalCartAmount().toFixed(2)}</p>
             </div>
 
             <hr />
@@ -69,7 +69,7 @@ const Cart = () => {
 
             <div className="cart-total-details">
               <b>Total</b>
-              <b>${getTotalCartAmount() === 0 ? 0 : getTotalCartAmount() + 2}</b>
+              <b>${(getTotalCartAmount() + 2).toFixed(2)}</b>
             </div>
           </div>
 

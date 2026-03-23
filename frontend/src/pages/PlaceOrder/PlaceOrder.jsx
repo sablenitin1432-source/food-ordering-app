@@ -1,11 +1,12 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import './PlaceOrder.css';
 import { StoreContext } from '../../context/StoreContext';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const PlaceOrder = () => {
-  const navigate = useNavigate();
-  const { getTotalCartAmount, food_list, cartItems } = useContext(StoreContext);
+
+  const { getTotalCartAmount, food_list, cartItems, url, token } = useContext(StoreContext);
 
   const [data, setData] = useState({
     firstName: "",
@@ -22,15 +23,69 @@ const PlaceOrder = () => {
   const onChangeHandler = (event) => {
     const name = event.target.name;
     const value = event.target.value;
-    setData(prev => ({ ...prev, [name]: value }));
+    setData(data => ({ ...data, [name]: value }));
   };
 
-  const isDeliveryInfoComplete = () => Object.values(data).every(field => field.trim() !== "");
 
-  const totalAmount = getTotalCartAmount() + 2;
+
+  const placeOrder = async (event) => {
+    event.preventDefault();
+
+    let orderItems = [];
+
+    food_list.forEach((item) => {
+      if (cartItems[item._id] > 0) {
+        let itemInfo = { ...item };
+        itemInfo.quantity = cartItems[item._id];
+        orderItems.push(itemInfo);
+      }
+    });
+
+    let orderData = {
+
+      address: data,
+      items: orderItems,
+      amount: getTotalCartAmount() + 2,
+    };
+    console.log(localStorage.getItem("userId"))
+
+    try {
+      console.log("TOKEN SENDING:", token);
+      let response = await axios.post(
+        url + "/api/order/place",
+        orderData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      if (response.data.success) {
+        const { session_url } = response.data; // ✅ correct
+        window.location.replace(session_url);
+      } else {
+        alert("Error placing order");
+      }
+    } catch (error) {
+      console.log(error.response?.data || error.message);
+    }
+  };
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!token) {
+      navigate('/cart')
+
+    }
+    else if (getTotalCartAmount() === 0) {
+      navigate('/cart')
+    }
+  }, [token])
 
   return (
-    <form className='place-order'>
+    <form onSubmit={placeOrder} className='place-order'>
       <div className="place-order-left">
         <p className="title">Delivery Information</p>
         <div className="multi-fields">
@@ -52,44 +107,31 @@ const PlaceOrder = () => {
       <div className="place-order-right">
         <div className="cart-total">
           <h2>Cart Totals</h2>
-          <div className="cart-total-details">
-            <p>Total</p>
-            <b>₹{totalAmount}</b>
+
+          <div>
+            <div className="cart-total-details">
+              <p>Subtotal</p>
+              <p>${getTotalCartAmount().toFixed(2)}</p>
+            </div>
+
+            <hr />
+
+            <div className="cart-total-details">
+              <p>Delivery Fee</p>
+              <p>${2}</p>
+            </div>
+
+            <hr />
+
+            <div className="cart-total-details">
+              <b>Total</b>
+              <b>${(getTotalCartAmount() + 2).toFixed(2)}</b>
+            </div>
+
+            <button type='submit'>PROCEED TO PAYMENT
+            </button>
+
           </div>
-
-          <button
-            type="button"
-            disabled={!isDeliveryInfoComplete()}
-            style={{
-              cursor: isDeliveryInfoComplete() ? "pointer" : "not-allowed",
-              opacity: isDeliveryInfoComplete() ? 1 : 0.5
-            }}
-            onClick={() => {
-
-              let orderItems = [];
-
-              food_list.forEach((item) => {
-                if (cartItems[item._id] > 0) {
-                  let itemInfo = { ...item, quantity: cartItems[item._id] };
-                  orderItems.push(itemInfo);
-                }
-              });
-
-              const orderData = {
-                address: data,
-                items: orderItems,
-                amount: totalAmount
-              };
-
-              navigate("/fake-payment", {
-                state: { orderData }
-              });
-
-            }}
-          >
-            PROCEED TO PAYMENT
-          </button>
-          {!isDeliveryInfoComplete() && <span style={{ color: 'red' }}>Please fill all delivery details to proceed</span>}
         </div>
       </div>
     </form>
