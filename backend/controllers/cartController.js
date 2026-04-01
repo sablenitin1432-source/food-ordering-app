@@ -9,7 +9,7 @@ const addToCart = async (req, res) => {
       return res.json({ success: false, message: "User not found" });
     }
 
-    let cartData = user.cartData || {};
+    let cartData = user.cartData;
 
     if (!cartData[req.body.itemId]) {
       cartData[req.body.itemId] = 1;
@@ -17,8 +17,9 @@ const addToCart = async (req, res) => {
       cartData[req.body.itemId] += 1;
     }
 
-    await userModel.findByIdAndUpdate(req.userId, { cartData });
+    user.cartData = cartData;
 
+    await user.save(); // 🔥 MOST IMPORTANT
     res.json({ success: true });
   } catch (error) {
     console.log(error);

@@ -6,7 +6,7 @@ import { assets } from '../../assets/assets';
 
 const MyOrders = () => {
 
-    const { url, token } = useContext(StoreContext);
+    const { token, url } = useContext(StoreContext);
     const [data, setData] = useState([]);
 
     const fetchOrders = async () => {
