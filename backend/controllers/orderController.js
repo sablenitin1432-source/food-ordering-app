@@ -3,12 +3,17 @@ import userModel from "../models/userModel.js";
 import Stripe from "stripe";
 import mongoose from "mongoose";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+let stripe;
+
+if (process.env.STRIPE_SECRET_KEY) {
+  stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+}
 
 // placing user order for frontend
 const placeOrder = async (req, res) => {
   console.log("PlaceOrder body:", req.body);
-  const frontend_url = "http://localhost:5173";
+  const frontend_url =
+    "https://food-ordering-fuznf9691-sablenitin1432-sources-projects.vercel.app";
 
   try {
     const userId = req.userId;
