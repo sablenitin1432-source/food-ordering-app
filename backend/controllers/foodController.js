@@ -6,34 +6,30 @@ import fs from "fs";
 
 const addFood = async (req, res) => {
   try {
-    console.log("BODY:", req.body);
-    console.log("FILE:", req.file);
-
     if (!req.file) {
       return res
         .status(400)
         .json({ success: false, message: "Image not uploaded" });
     }
 
+    // 🔥 Upload to Cloudinary
     const result = await cloudinary.uploader.upload(req.file.path);
-    const image_url = result.secure_url;
 
-    // local file delete (important)
-    fs.unlinkSync(req.file.path);
+    console.log("CLOUDINARY URL:", result.secure_url);
 
     const food = new foodModel({
       name: req.body.name,
       description: req.body.description,
-      price: Number(req.body.price), // make sure it's Number
+      price: Number(req.body.price),
       category: req.body.category,
-      image: result.secure_url, // 🔥 IMPORTANT
+      image: result.secure_url, // ✅ correct URL
     });
 
     await food.save();
 
     res.status(201).json({ success: true, message: "Food Added", food });
   } catch (error) {
-    console.error("ERROR:", error);
+    console.error(error);
     res.status(500).json({ success: false, message: error.message });
   }
 };
