@@ -21,7 +21,7 @@ const Verify = () => {
             );
 
             if (response.data.success) {
-                navigate("/myorders"); // ✅ redirect working
+                navigate("/order"); // ✅ redirect working
             } else {
                 navigate("/");
             }
