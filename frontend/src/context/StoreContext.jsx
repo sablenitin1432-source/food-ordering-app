@@ -2,14 +2,14 @@ import axios from "axios";
 import { createContext, useContext, useEffect, useState } from "react";
 
 
-export const StoreContext = createContext(null)
+export const StoreContext = createContext()
 
 
 const StoreContextProvider = (props) => {
 
 
     const [cartItems, setCartItems] = useState({});
-    const url = "https://food-backend-4bi7.onrender.com";
+    const url = import.meta.env.VITE_BACKEND_URL;
     const [token, setToken] = useState("");
     const [food_list, setFOODList] = useState([])
 
@@ -65,8 +65,13 @@ const StoreContextProvider = (props) => {
     }
 
     const fetchFoodList = async () => {
-        const response = await axios.get(url + "/api/food/list")
-        setFOODList(response.data.data)
+        try {
+            const response = await axios.get(url + "/api/food/list");
+            console.log("FULL RESPONSE:", response.data);
+            setFOODList(response.data.data);
+        } catch (error) {
+            console.log("ERROR:", error);
+        }
     }
 
     const loadCartData = async (token) => {
