@@ -8,6 +8,9 @@ import userRouter from "./routes/userRoutes.js";
 import "dotenv/config";
 import cartRoute from "./routes/cartRoute.js";
 import orderRouter from "./routes/orderRoute.js";
+import connectCloudinary from "./config/cloudinary.js";
+
+connectCloudinary();
 
 dotenv.config();
 
@@ -18,7 +21,11 @@ const port = 4000;
 
 // middleware
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: "*",
+  }),
+);
 
 // db connection
 mongoose
