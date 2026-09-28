@@ -1,0 +1,45 @@
+import React, { useCallback, useEffect, useContext } from 'react'
+import './Verify.css'
+import { useNavigate, useSearchParams } from 'react-router-dom'
+import axios from 'axios';
+import { StoreContext } from '../../context/StoreContext'; // ✅ add
+
+const Verify = () => {
+
+    const { url } = useContext(StoreContext); // ✅ add
+
+    const [searchParams] = useSearchParams();
+    const success = searchParams.get("success")
+    const orderId = searchParams.get("orderId")
+    const navigate = useNavigate();
+
+    const verifyPayment = useCallback(async () => {
+        try {
+            const response = await axios.post(
+                url + "/api/order/verify",
+                { success, orderId }
+            );
+
+            if (response.data.success) {
+                navigate("/myorders"); // ✅ redirect working
+            } else {
+                navigate("/");
+            }
+        } catch (error) {
+            console.log(error.response?.data || error.message);
+            navigate("/");
+        }
+    }, [navigate, orderId, success, url])
+
+    useEffect(() => {
+        verifyPayment();
+    }, [verifyPayment])
+
+    return (
+        <div className='verify'>
+            <div className="spinner"></div>
+        </div>
+    )
+}
+
+export default Verify;
